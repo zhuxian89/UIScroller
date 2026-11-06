@@ -4,9 +4,27 @@ Automatic scrolling for lists, articles and other scrollable pages in iOS apps.
 
 ## Install
 
-Download the **RootHide** `.deb` from [Releases](https://github.com/zhuxian89/UIScroller/releases/latest), install it with your package manager, and reopen the target app.
+Download the package matching your jailbreak environment from the [1.0.7 beta1 prerelease](https://github.com/zhuxian89/UIScroller/releases/tag/v1.0.7-beta1), install it with your package manager, and reopen the target app. This compatibility release targets **iOS / iPadOS 15 or later**.
 
-The 1.0.6 release package requires **iOS 17 or later and RootHide**. It contains arm64 and arm64e slices. This package is not intended for a standard rootless or rootful jailbreak.
+The earlier [1.0.6 stable release](https://github.com/zhuxian89/UIScroller/releases/tag/v1.0.6) remains available for **iOS 17+ / RootHide**. The beta has not been tested on physical iOS 15/16 devices or standard rootful/rootless jailbreaks; see the validation scope below.
+
+## iOS 15 compatibility build
+
+The current source is **1.0.7 beta1**, targeting **iOS 15 or later**, with separate **rootful, rootless and RootHide** packages. The published 1.0.6 stable release remains the RootHide-only build with an iOS 17 minimum.
+
+Choose the package for your jailbreak environment:
+
+| Environment | Package filename suffix |
+| --- | --- |
+| Standard rootful | `_iphoneos-arm.deb` |
+| Standard rootless | `_iphoneos-arm64.deb` |
+| RootHide | `_iphoneos-arm64e.deb` |
+
+These suffixes identify packaging schemes; do not choose solely by the device's CPU. All three builds contain arm64 and arm64e slices and share the same functionality.
+
+The compatibility build uses the older trait-change callback for text-size updates. iOS 16+ retains the existing compact panel with custom height; iOS 15 opens the standard expanded sheet so the main controls are easy to find. Speed, timers, screen-idle handling and per-app settings are unchanged.
+
+Strict iOS 15 API availability checks and package checks for all three schemes passed, including both CPU architectures, signatures, installation paths and loader dependencies. The modern panel and the iOS 15 panel branch were exercised in an iOS 27 UIKit fixture (the latter forced in a temporary test copy), including live text-size changes. Actual iOS 15/16 device validation remains outstanding.
 
 ## Use
 
@@ -27,7 +45,7 @@ The menu is shared across supported apps: its app name comes from the current ap
 - The screen stays awake while scrolling. Every stop restores the app's previous idle-timer setting, including when the app enters the background, the page leaves the window, the timer expires or the content boundary is reached.
 - Fixes for nested text views with tiny rounding overflow and LINUX DO post-reading anchors. No raw host private-field reads or writes are used.
 
-The material uses public iOS 17 blur APIs. The [interactive HTML preview](design/menu-preview.html) demonstrates the layout and interactions separately from the tweak.
+The frosted material also works on iOS 15. The [interactive HTML preview](design/menu-preview.html) demonstrates the layout and interactions separately from the tweak.
 
 ## LINUX DO compatibility and diagnostics
 
@@ -37,16 +55,26 @@ LINUX DO also exposes **更多设置 → 复制诊断信息** (More → Copy dia
 
 ## Build
 
-Use a RootHide-compatible Theos installation. The default Makefile builds the RootHide package with an iOS 17 deployment target:
+Use a RootHide-compatible Theos installation with the standard rootful/rootless schemes available. The current Makefile defaults to RootHide with an iOS 15 deployment target:
 
 ```sh
 make clean package
 ```
 
-The release was built with Xcode 27. The included `build.sh` is an older multi-scheme helper; the published 1.0.6 asset is the RootHide build produced by the command above.
+To build all three variants sequentially:
+
+```sh
+./build.sh -j2
+```
+
+The script passes each scheme directly to `make`, cleans between builds, stops on failure, and does not edit the Makefile. For a single standard rootless package, run `make clean THEOS_PACKAGE_SCHEME=rootless` followed by `make package THEOS_PACKAGE_SCHEME=rootless`; use an empty scheme for rootful.
+
+Builds were checked with Xcode 27. The 1.0.7 beta1 release contains all three variants plus `SHA256SUMS-1.0.7-beta1.txt`.
 
 ## Validation
 
-The final native menu passed two real-touch XCTest flows. Timer and screen-idle restoration passed 46 checks, and the reader adapter passed 22 checks. Automated runtime checks used an isolated UIKit fixture on the available iOS 27 Simulator, not the original LINUX DO binary. These checks do not establish compatibility with every app or replace iOS 17 RootHide device testing.
+For 1.0.7 beta1, one modern-panel XCTest flow and one forced iOS 15-panel flow passed on iOS 27 Simulator. Both paths also handled live system text-size changes while the panel stayed open. The legacy test changed only the availability conditions in a temporary source copy; it did not run an iOS 15 runtime. Package verification does not establish successful injection on physical rootful/rootless devices.
+
+For the 1.0.6 baseline, the native menu passed two real-touch XCTest flows. Timer and screen-idle restoration passed 46 checks, and the reader adapter passed 22 checks. Automated runtime checks used an isolated UIKit fixture on the available iOS 27 Simulator, not the original LINUX DO binary. These checks do not establish compatibility with every app or replace iOS 17 RootHide device testing.
 
 This fork retains the original project's license and author attribution.

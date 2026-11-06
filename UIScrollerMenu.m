@@ -123,14 +123,20 @@
     sheet.prefersScrollingExpandsWhenScrolledToEdge = NO;
     sheet.widthFollowsPreferredContentSizeWhenEdgeAttached = YES;
     sheet.prefersEdgeAttachedInCompactHeight = YES;
-    sheet.detents = @[
-        [UISheetPresentationControllerDetent customDetentWithIdentifier:@"uiscroller.compact" resolver:^CGFloat(id<UISheetPresentationControllerDetentResolutionContext> context) {
-            CGFloat contentHeight = [[UIFontMetrics metricsForTextStyle:UIFontTextStyleBody] scaledValueForValue:500];
-            return MIN(contentHeight, context.maximumDetentValue);
-        }],
-        UISheetPresentationControllerDetent.largeDetent
-    ];
-    sheet.selectedDetentIdentifier = @"uiscroller.compact";
+    if (@available(iOS 16.0, *)) {
+        sheet.detents = @[
+            [UISheetPresentationControllerDetent customDetentWithIdentifier:@"uiscroller.compact" resolver:^CGFloat(id<UISheetPresentationControllerDetentResolutionContext> context) {
+                CGFloat contentHeight = [[UIFontMetrics metricsForTextStyle:UIFontTextStyleBody] scaledValueForValue:500];
+                return MIN(contentHeight, context.maximumDetentValue);
+            }],
+            UISheetPresentationControllerDetent.largeDetent
+        ];
+        sheet.selectedDetentIdentifier = @"uiscroller.compact";
+    } else {
+        // iOS 15 has no custom heights; keep the primary controls easy to reach.
+        sheet.detents = @[UISheetPresentationControllerDetent.largeDetent];
+        sheet.selectedDetentIdentifier = UISheetPresentationControllerDetentIdentifierLarge;
+    }
 
     self.contentScrollView = [[UIScrollView alloc] init];
     self.contentScrollView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -178,8 +184,14 @@
         [self.contentStack.widthAnchor constraintEqualToAnchor:self.contentScrollView.frameLayoutGuide.widthAnchor constant:-44]
     ]];
     [self updateContentSizeLayout];
-    [self registerForTraitChanges:@[UITraitPreferredContentSizeCategory.class] withAction:@selector(updateContentSizeLayout)];
     [self refreshState];
+}
+
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+    [super traitCollectionDidChange:previousTraitCollection];
+    if (self.isViewLoaded && ![previousTraitCollection.preferredContentSizeCategory isEqualToString:self.traitCollection.preferredContentSizeCategory]) {
+        [self updateContentSizeLayout];
+    }
 }
 
 - (UIStackView *)buildMain {
@@ -326,7 +338,9 @@
     self.footer.axis = axis;
     self.footer.alignment = accessibilitySize ? UIStackViewAlignmentLeading : UIStackViewAlignmentCenter;
     self.gestureLabel.textAlignment = accessibilitySize ? NSTextAlignmentLeft : NSTextAlignmentRight;
-    [self.sheetPresentationController invalidateDetents];
+    if (@available(iOS 16.0, *)) {
+        [self.sheetPresentationController invalidateDetents];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {

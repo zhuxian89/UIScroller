@@ -131,7 +131,7 @@ static UIScrollerMenuGestureDelegate *menuGestureDelegate;
 static NSString *scrollDiagnosticReport(UIWindow *window) {
     NSMutableArray<NSString *> *views = [NSMutableArray array];
     if (window) appendVisibleScrollViews(window, window, views);
-    return [NSString stringWithFormat:@"UIScroller 1.0.6 (native menu)\niOS %@\nApp %@ %@ (%@)\ntimer=%d countdown=%d readerAdapter=%d\nactive: %@\nlast target: %@\n\nRecent events (no post content):\n%@\n\nVisible scroll views:\n%@",
+    return [NSString stringWithFormat:@"UIScroller 1.0.7 beta1 (iOS 15 compatibility)\niOS %@\nApp %@ %@ (%@)\ntimer=%d countdown=%d readerAdapter=%d\nactive: %@\nlast target: %@\n\nRecent events (no post content):\n%@\n\nVisible scroll views:\n%@",
         UIDevice.currentDevice.systemVersion, NSBundle.mainBundle.bundleIdentifier,
         [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"],
         [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleVersion"],
@@ -152,7 +152,7 @@ static void openMenuInWindow(UIScrollView *scrollView, UIWindow *window) {
     recordScrollEvent(@"MENU target", scrollView);
     UIScrollerMenuController *menu = [UIScrollerMenuController new];
     currentMenu = menu;
-    menu.versionText = @"1.0.6";
+    menu.versionText = @"1.0.7 beta1";
     menu.appName = [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleDisplayName"] ?:
         [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleName"];
     menu.readState = ^UIScrollerMenuState *{

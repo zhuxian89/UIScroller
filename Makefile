@@ -11,7 +11,7 @@ $(TWEAK_NAME)_FRAMEWORKS = UIKit
 
 ARCHS = arm64e arm64
 FINALPACKAGE = 1
-TARGET = iphone:clang:latest:17.0
+TARGET = iphone:clang:latest:15.0
 INSTALL_TARGET_PROCESSES = SpringBoard
 
 # build for rootful, rootless, or roothide

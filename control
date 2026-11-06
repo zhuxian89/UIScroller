@@ -1,10 +1,10 @@
 Package: com.iamdega.uiscroller
 Name: UIScroller
-Version: 1.0.6
+Version: 1.0.7~beta1
 Architecture: iphoneos-arm
 Description: Rest your fingers, automate scrolling any pages!
 Maintainer: iamdega
 Author: iamdega
 Section: Tweaks
-Depends: mobilesubstrate (>= 0.9.5000), firmware (>= 17.0)
+Depends: mobilesubstrate (>= 0.9.5000), firmware (>= 15.0)
 Icon: https://i.postimg.cc/7Z9SYWZS/UIScroller.png

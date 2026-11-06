@@ -12,6 +12,6 @@
 
 [UIScrollerMenu.m](../UIScrollerMenu.m) 实现 UIKit 控制面板；[Tweak.xm](../Tweak.xm) 接入真实滚动、定时和常亮状态，设置按 App 保存。
 
-原生版随 1.0.6 RootHide 安装包交付，使用 iOS 17 支持的轻磨砂系统材质。iPad 采用紧凑表单面板；辅助大字号下定时选项纵向排列。HTML 保留设计评审时的独立交互，不代表所有原生细节。
+原生版已随 1.0.6 RootHide 安装包交付。当前 1.0.7 beta1 兼容源码提供 rootful、rootless、RootHide 三种打包方案，将最低目标降到 iOS 15，保留轻磨砂系统材质；iOS 15 使用系统展开面板，iOS 16+ 保留紧凑高度。iPad 采用紧凑表单面板；辅助大字号下定时选项纵向排列。HTML 保留设计评审时的独立交互，不代表所有原生细节。
 
 预览已检查桌面和手机的浅色/深色布局；原生版另有 UIKit 交互、深色、大字、键盘和 iPad 检查。验证范围见项目 [README](../README.md#validation)。
